@@ -30,7 +30,7 @@ type query struct {
 }
 
 func (q *query) getKey() string {
-	return q.val
+	return q.key
 }
 
 func (q *query) getVal() string {

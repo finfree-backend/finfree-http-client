@@ -7,11 +7,11 @@ import (
 )
 
 type Client interface {
-	Get(URI string, responseBody any, queryParams ...pair) (*http.Response, error)
-	Post(URI string, requestBody, responseBody any) (*http.Response, error)
-	Put(URI string, requestBody, responseBody any) (*http.Response, error)
-	Patch(URI string, requestBody, responseBody any) (*http.Response, error)
-	Delete(URI string, responseBody any, queryParams ...pair) (*http.Response, error)
+	Get(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error)
+	Post(URI string, requestBody, responseBody interface{}) (*http.Response, error)
+	Put(URI string, requestBody, responseBody interface{}) (*http.Response, error)
+	Patch(URI string, requestBody, responseBody interface{}) (*http.Response, error)
+	Delete(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error)
 }
 
 type finfreeHttpClient struct {
@@ -24,27 +24,27 @@ type finfreeHttpClient struct {
 // Get method sends a [GET] request
 // response-body can be specified in the request
 // query-parameter(s) can be specified in the request
-func (cl *finfreeHttpClient) Get(URI string, responseBody any, queryParams ...pair) (*http.Response, error) {
+func (cl *finfreeHttpClient) Get(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
 	return cl.withNoRequestBody(http.MethodGet, URI, responseBody, queryParams...)
 }
 
-func (cl *finfreeHttpClient) Post(URI string, requestBody, responseBody any) (*http.Response, error) {
+func (cl *finfreeHttpClient) Post(URI string, requestBody, responseBody interface{}) (*http.Response, error) {
 	return cl.withRequestBody(http.MethodPost, URI, requestBody, responseBody)
 }
 
-func (cl *finfreeHttpClient) Put(URI string, requestBody, responseBody any) (*http.Response, error) {
+func (cl *finfreeHttpClient) Put(URI string, requestBody, responseBody interface{}) (*http.Response, error) {
 	return cl.withRequestBody(http.MethodPut, URI, requestBody, responseBody)
 }
 
-func (cl *finfreeHttpClient) Patch(URI string, requestBody, responseBody any) (*http.Response, error) {
+func (cl *finfreeHttpClient) Patch(URI string, requestBody, responseBody interface{}) (*http.Response, error) {
 	return cl.withRequestBody(http.MethodPatch, URI, requestBody, responseBody)
 }
 
-func (cl *finfreeHttpClient) Delete(URI string, responseBody any, queryParams ...pair) (*http.Response, error) {
+func (cl *finfreeHttpClient) Delete(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
 	return cl.withNoRequestBody(http.MethodDelete, URI, responseBody, queryParams...)
 }
 
-func (cl *finfreeHttpClient) withNoRequestBody(method, URI string, responseBody any, queryParams ...pair) (*http.Response, error) {
+func (cl *finfreeHttpClient) withNoRequestBody(method, URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
 	// Create the request
 	request, err := cl.newRequest(method, URI, nil)
 	if err != nil {
@@ -63,7 +63,7 @@ func (cl *finfreeHttpClient) withNoRequestBody(method, URI string, responseBody 
 	return cl.do(request, responseBody)
 }
 
-func (cl *finfreeHttpClient) withRequestBody(method, URI string, requestBody, responseBody any) (*http.Response, error) {
+func (cl *finfreeHttpClient) withRequestBody(method, URI string, requestBody, responseBody interface{}) (*http.Response, error) {
 	// Jsonize (marshal) the request body (if there is)
 	var data []byte
 	if requestBody != nil {
@@ -106,7 +106,7 @@ func (cl *finfreeHttpClient) newRequest(method, URI string, requestBody []byte) 
 // do send the request
 // If request needs to consume a response body, method needs to be called with v variable
 // 'v' needs to be a pointer (there is no return statement for unmarshalled data)
-func (cl *finfreeHttpClient) do(r *http.Request, v any) (*http.Response, error) {
+func (cl *finfreeHttpClient) do(r *http.Request, v interface{}) (*http.Response, error) {
 	// Send the request
 	response, err := cl.client.Do(r)
 	if err != nil {

@@ -44,6 +44,10 @@ func (cl *finfreeHttpClient) Delete(URI string, responseBody interface{}, queryP
 	return cl.withNoRequestBody(http.MethodDelete, URI, responseBody, queryParams...)
 }
 
+func (cl *finfreeHttpClient) Custom(httpMethod method, URI string, requestBody, responseBody interface{}) (*http.Response, error) {
+	return cl.withRequestBody(string(httpMethod), URI, requestBody, responseBody)
+}
+
 func (cl *finfreeHttpClient) withNoRequestBody(method, URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
 	// Create the request
 	request, err := cl.newRequest(method, URI, nil)

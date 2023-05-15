@@ -12,6 +12,7 @@ type Client interface {
 	Put(URI string, requestBody, responseBody interface{}) (*http.Response, error)
 	Patch(URI string, requestBody, responseBody interface{}) (*http.Response, error)
 	Delete(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error)
+	Custom(httpMethod method, URI string, requestBody, responseBody interface{}) (*http.Response, error)
 }
 
 type finfreeHttpClient struct {

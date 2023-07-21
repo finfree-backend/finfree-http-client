@@ -115,7 +115,7 @@ func (cl *finfreeHttpClient) do(r *http.Request, v interface{}) (*http.Response,
 	// Send the request
 	response, err := cl.client.Do(r)
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 	defer response.Body.Close()
 
@@ -127,7 +127,7 @@ func (cl *finfreeHttpClient) do(r *http.Request, v interface{}) (*http.Response,
 	// Read all the data in request body
 	// Unmarshall it into 'v'
 	if err = json.NewDecoder(response.Body).Decode(v); err != nil {
-		return nil, err
+		return response, err
 	}
 
 	return response, nil

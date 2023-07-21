@@ -7,11 +7,11 @@ import (
 )
 
 type Client interface {
-	Get(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error)
+	Get(URI string, responseBody interface{}, queryParams ...Pair) (*http.Response, error)
 	Post(URI string, requestBody, responseBody interface{}) (*http.Response, error)
 	Put(URI string, requestBody, responseBody interface{}) (*http.Response, error)
 	Patch(URI string, requestBody, responseBody interface{}) (*http.Response, error)
-	Delete(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error)
+	Delete(URI string, responseBody interface{}, queryParams ...Pair) (*http.Response, error)
 	Custom(httpMethod method, URI string, requestBody, responseBody interface{}) (*http.Response, error)
 }
 
@@ -25,7 +25,7 @@ type finfreeHttpClient struct {
 // Get method sends a [GET] request
 // response-body can be specified in the request
 // query-parameter(s) can be specified in the request
-func (cl *finfreeHttpClient) Get(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
+func (cl *finfreeHttpClient) Get(URI string, responseBody interface{}, queryParams ...Pair) (*http.Response, error) {
 	return cl.withNoRequestBody(http.MethodGet, URI, responseBody, queryParams...)
 }
 
@@ -41,7 +41,7 @@ func (cl *finfreeHttpClient) Patch(URI string, requestBody, responseBody interfa
 	return cl.withRequestBody(http.MethodPatch, URI, requestBody, responseBody)
 }
 
-func (cl *finfreeHttpClient) Delete(URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
+func (cl *finfreeHttpClient) Delete(URI string, responseBody interface{}, queryParams ...Pair) (*http.Response, error) {
 	return cl.withNoRequestBody(http.MethodDelete, URI, responseBody, queryParams...)
 }
 
@@ -49,7 +49,7 @@ func (cl *finfreeHttpClient) Custom(httpMethod method, URI string, requestBody, 
 	return cl.withRequestBody(string(httpMethod), URI, requestBody, responseBody)
 }
 
-func (cl *finfreeHttpClient) withNoRequestBody(method, URI string, responseBody interface{}, queryParams ...pair) (*http.Response, error) {
+func (cl *finfreeHttpClient) withNoRequestBody(method, URI string, responseBody interface{}, queryParams ...Pair) (*http.Response, error) {
 	// Create the request
 	request, err := cl.newRequest(method, URI, nil)
 	if err != nil {
@@ -146,8 +146,8 @@ func NewWithBearerAuthorization(baseURL string, bearerToken string) Client {
 	})
 }
 
-// Constructor function with key-value pair header (customizable)
-func NewWithHeaderAuthorization(baseURL string, pairs ...pair) Client {
+// Constructor function with key-value Pair header (customizable)
+func NewWithHeaderAuthorization(baseURL string, pairs ...Pair) Client {
 	return new(baseURL, func(r *http.Request) {
 		for _, p := range pairs {
 			r.Header.Set(p.getKey(), p.getVal())

@@ -1,6 +1,6 @@
 package finfree_http_client
 
-type pair interface {
+type Pair interface {
 	getKey() string
 	getVal() string
 }
